@@ -21,13 +21,28 @@ export class Api {
 
   public init({ node, apiKey }: { node: NodeConfiguration; apiKey: string }): void {
     this.axiosClient = axios.create({
-      baseURL: `${node.protocol}://${node.host}:${node.port}${node.path || ''}`,
+/* SWARM_BEGIN - simon - 2025/12/31
+*     - support railway deployment of our typesense server
+*
+*     baseURL: `${node.protocol}://${node.host}:${node.port}${node.path || ''}`,
+*/
+      baseURL: `${node.protocol}://${node.host}${node.path || ''}`,
+/* SWARM_END
+*
+*/
       headers: { 'x-typesense-api-key': apiKey },
     });
     this.typesenseClient = new Typesense.Client({
       nodes: [
         {
-          ...node,
+/* SWARM_BEGIN - simon - 2025/12/31
+*     - support railway deployment of our typesense server
+*         ...node,
+*/
+          url: `${process.env.TYPESENSE_SERVER_URL}`
+/* SWARM_END
+*
+*/
         },
       ],
       apiKey,
